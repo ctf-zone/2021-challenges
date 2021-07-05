@@ -36,6 +36,7 @@ ifeq ($(COVERAGE), 1)
 	CFLAGS += -fprofile-instr-generate -fcoverage-mapping
 endif
 
+DEFINES += -DHACK
 
 .SUFFIXES: .c .cpp
 

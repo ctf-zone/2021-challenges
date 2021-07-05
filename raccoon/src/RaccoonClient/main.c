@@ -25,6 +25,7 @@
 #define SERVER_HOST "127.0.0.1"
 #define MSG_SEND "raccoon"
 
+#define DH_PRIV_KEY "1FB3B9D8A097BE72EAD5C1DB2D7519BD9854C2D40BE78C7FD88E0C4D22239E67594BA8934FCB3E471F757472A02D7C815FFA4099BB584F0722650892567781AD7A82049D869D2E8462E7A25A252726ACD168FC0198015A1B610A5FC71280E25652C7E63935F5A9F298E931FC001247174E060E0CC5316A00"
 
 static int cb_ssl_errors(const char *str, size_t len, void *bp) {
   UNREFERENCED_PARAMETER(bp);
@@ -223,6 +224,15 @@ int raccon_client(SOCKET client_socket) {
         break;
       }
 
+      res = set_priv_key_DH(dh, DH_PRIV_KEY, cb_ssl_errors);
+      if(res != 0) {
+        fprintf(stderr, "set_priv_key_DH failed with errors\n");
+        ERR_print_errors_cb(cb_ssl_errors, NULL);
+        BN_free(dh_pub_s);
+        dh_pub_s = NULL;
+        state = cstate_error;
+        break;
+      }
       res = DH_generate_key(dh);
       if (res != 1) {
         fprintf(stderr, "DH_generate_key failed with errors: %d\n", res);

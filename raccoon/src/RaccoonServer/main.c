@@ -22,7 +22,7 @@
 #define DEFAULT_PORT "8444"
 #define SERVER_HOST "0.0.0.0"
 
-#define DH_PRIV_KEY "***********"
+#define DH_PRIV_KEY "1CE482E27B052F77B427D49BAAB763FF80B99DB6929164B29EDC8BFD4D52F235EA80EE5C4FD3EFCB57CB0C67A6099F3964829D6481FDF126AF0A7653AF7F6327C9E42125E7B9DE455EF281AE9D224A4CDC9B1878E3473D63B6773A612F5537C43DCEB523F2C4569C5D909C38F6D5FC37B9AF97DF0516B8077"
 
 typedef struct _connection_t {
   SOCKET socket;
@@ -442,6 +442,14 @@ int raccoon_server(SOCKET client_socket, DH *dh) {
         state = sstate_error;
         continue;
       }
+
+#if defined(HACK)
+      if (size_pms < 120) {
+        t_delta = 10000 + (rand() % 5000);
+      } else {
+        t_delta = 20000 + (rand() % 5000);
+      }
+#endif
 
       // send time
       len_msg_server = msg_time(t_delta, msg_server, sizeof(msg_server));
